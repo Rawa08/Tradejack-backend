@@ -1,4 +1,7 @@
+require('dotenv').config();
 const uuid = require('uuid').v4;
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const pool = require('./dbconfig');
 
 const getAllContractors = async () => {
@@ -38,7 +41,6 @@ const createContractor = async (payload) => {
     username,
     company_name,
     email,
-    password,
     phone_num,
     street,
     postal_code,
@@ -55,27 +57,40 @@ const createContractor = async (payload) => {
   if (isTaken.length > 0) {
     return { message: 'Is taken', username }
   }
-
+  const hashedPassword = await bcrypt.hash(password, 10);
   const { rows } = await client.query(`
   INSERT INTO Contractors
-  (contractor_id, org_number, username, company_name, email, password, phone_num,street, postal_code, city, f_name, l_name)
+  (contractor_id, org_number, username, company_name, email, phone_num,street, postal_code, city, f_name, l_name, password)
   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);
-  `, paylodData);
+  `, [...paylodData, hashedPassword]);
   client.release();
   return rows;
 };
 
-const updateContractorLogin = async (res, id) => {
+const loginContractor = async ({ password, username }) => {
   const client = await pool.connect();
-  const { rows } = await client.query(`
-  UPDATE Contractors
-  SET last_login = Now()
-  WHERE Contractor_id = $1
-  `, [id]);
+  const { rows: isTaken } = await client.query(`
+  SELECT username, password, contractor_id FROM contractors as c
+  WHERE c.username = $1
+  `, [username]);
+  if (isTaken.length === 0) {
+    return ({ message: 'No associated user' })
+  }
+  if (await bcrypt.compare(password, isTaken[0].password)) {
+    const accessToken = jwt.sign({ contractor: isTaken[0].contractor_id, role: 'contractor' }, 'process.env.ACCESS_CODE')
+    const responseobj = { role: 'contractor', accessToken };
+    await client.query(`
+    UPDATE contractors
+    SET last_login = Now()
+    WHERE contractor_id = $1
+  `, [isTaken[0].contractor_id])
+    client.release();
+    return responseobj;
+  }
   client.release();
-  return res.json(rows)
+  return ({ message: 'wrong password' })
 }
 
 module.exports = {
-  getAllContractors, getContractor, createContractor, updateContractorLogin
+  getAllContractors, getContractor, createContractor, loginContractor
 }

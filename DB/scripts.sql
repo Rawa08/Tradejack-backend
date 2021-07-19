@@ -23,15 +23,15 @@ CREATE TABLE Contractors
 	contractor_id varchar(120) NOT NULL,
 	username varchar(120) NOT NULL,
 	org_number varchar(120) NOT NULL,
-    company_name varchar(120) NOT NULL,
-    f_name varchar(120),
-	l_name varchar(120),
+  company_name varchar(120) NOT NULL,
 	email varchar(120) not null,
 	password char(60) not null,
 	phone_num varchar(20) not null,
 	street varchar(120) not null,
 	postal_code integer not null,
 	city varchar(120) not null,
+    f_name varchar(120),
+	l_name varchar(120),
 	TS timestamptz default now(),
 	last_login timestamptz
 );

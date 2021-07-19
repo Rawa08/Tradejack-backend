@@ -1,34 +1,39 @@
 const express = require('express');
 const router = express.Router();
-const { getAllContractors, getContractor, createContractor, updateContractorLogin } = require('../../DB/dbContractor')
+const { getAllContractors, getContractor, createContractor, loginContractor } = require('../../DB/dbContractor')
 
-//get all clients
+//get all contactors
 
 router.get('/', async (req, res) =>{
-const clients = await getAllContractors();
-res.json(clients);
+const contactors = await getAllContractors();
+res.json(contractors);
 });
 
-// get one client
+// get one contractor
 router.get('/:id', async (req, res) =>{
     const {id} = req.params;
-    const client = await getContractor(id);
-    res.json(client);
+    const contractor = await getContractor(id);
+    res.json(contractor);
     });
 
-//create a client
+//create a contractor
 router.post('/', async (req, res) => {
-  const newClient = await createContractor(req.body);
-  res.json(newClient);
+  const newContractor = await createContractor(req.body);
+  res.json(newContractor);
 })
 
-//update client last login
+//update contractor last login
 router.put('/:id/:updatetype', async (req, res) => {
   const {id, updatetype} = req.params;
-  if(updatetype === 'lastLogin') return await updateContractorLogin(res, id)
+  // if(updatetype === 'lastLogin') return await updateContractorLogin(res, id)
   res.json('nok')
 })
-//remove client
+//remove contractor
 
+//login contractor
+router.post('/login', async (req,res) => {
+  const loginAttempt = await loginContractor(req.body);
+  res.json(loginAttempt)
+})
 
 module.exports = router;

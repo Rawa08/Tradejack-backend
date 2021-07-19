@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllClients, getClient, createClient, updateClientLogin } = require('../../DB/dbClient')
+const { getAllClients, getClient, createClient,loginClient } = require('../../DB/dbClient')
 
 //get all clients
 
@@ -25,10 +25,16 @@ router.post('/', async (req, res) => {
 //update client last login
 router.put('/:id/:updatetype', async (req, res) => {
   const {id, updatetype} = req.params;
-  if(updatetype === 'lastLogin') return await updateClientLogin(res, id)
+  // if(updatetype === 'lastLogin') return await updateClientLogin(res, id)
   res.json('nok')
 })
 //remove client
+
+//login client
+router.post('/login', async (req,res) => {
+  const loginAttempt = await loginClient(req.body);
+  res.json(loginAttempt)
+})
 
 
 module.exports = router;

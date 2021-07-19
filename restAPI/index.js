@@ -1,11 +1,7 @@
-const express = require('express');
-const router = express.Router();
+const clientRoutes = require('./users/client');
+const contractorRoutes = require('./users/contractor');
 
-router.get('/', (req, res) => res.json({message:'Ninjas'}))
-
-
-
-
-
-
-module.exports = router;
+module.exports = {
+    clientRoutes,
+    contractorRoutes
+}

@@ -32,6 +32,7 @@ router.put('/:id/:updatetype', async (req, res) => {
 
 //login client
 router.post('/login', async (req,res) => {
+  console.log(req.body);
   const loginAttempt = await loginClient(req.body);
   res.json(loginAttempt)
 })

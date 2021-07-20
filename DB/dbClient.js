@@ -5,22 +5,31 @@ const jwt = require('jsonwebtoken')
 const pool = require('./dbconfig');
 
 const getAllClients = async () => {
+  try{
   const client = await pool.connect();
   const { rows } = await client.query('SELECT * FROM clients as c order by c.id');
   client.release();
 
   return rows;
+}
+catch(err) {
+  console.log('getAllClients from db '+err.message)
+}
 };
 
 const getClient = async (id) => {
+  try {
   const client = await pool.connect();
   const { rows } = await client.query('SELECT * FROM clients as c WHERE c.client_id = $1', [id]);
   client.release();
 
   return rows;
+}
+catch(err) {console.log('get a client from db '+err.message)}
 };
 
 const createClient = async (payload) => {
+  try {
   const { username, f_name, l_name, email,
     password, phone_num, street, postal_code, city } = payload;
   const client_id = uuid();
@@ -43,9 +52,12 @@ const createClient = async (payload) => {
   `, [...payloadData, hashedPassword]);
   client.release();
   return rows;
+}
+catch(err) {console.log('Create client in db '+ err.message)}
 };
 
 const loginClient = async ({ password, username }) => {
+  try {
   const client = await pool.connect();
   const { rows: isTaken } = await client.query(`
   SELECT username, password, client_id FROM clients as c
@@ -67,6 +79,8 @@ const loginClient = async ({ password, username }) => {
   }
   client.release();
   return ({ message: 'wrong password' })
+}
+catch(err) {console.log('Log in client '+err.message)}
 }
 
 module.exports = {

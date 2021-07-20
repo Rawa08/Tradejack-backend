@@ -11,7 +11,7 @@ const getAllContractors = async () => {
   client.release();
   return rows;
 } catch (err) {
-  console.log('get all contractors '+err.message);
+  console.log('from get all contractors: '+err.message);
 }
 };
 
@@ -30,31 +30,31 @@ catch(err) {
 
 const createContractor = async (payload) => {
   try {  const {
-    org_number,
     username,
-    company_name,
-    email,
+    orgnumber,
+    companyname,
     password,
-    phone_num,
+    fName,
+    lName,
+    email,
+    phonenum,
     street,
-    postal_code,
-    city,
-    f_name,
-    l_name } = payload;
+    postalcode,
+    city, } = payload;
   const contractor_id = uuid();
 
   const paylodData = [
     contractor_id,
-    org_number,
+    orgnumber,
     username,
-    company_name,
+    companyname,
     email,
-    phone_num,
+    phonenum,
     street,
-    postal_code,
+    postalcode,
     city,
-    f_name,
-    l_name];
+    fName,
+    lName];
 
   const client = await pool.connect();
   const { rows: isTaken } = await client.query(`
@@ -63,6 +63,7 @@ const createContractor = async (payload) => {
   `, [username]);
 
   if (isTaken.length > 0) {
+    client.release();
     return { message: 'Is taken', username }
   }
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -74,7 +75,8 @@ const createContractor = async (payload) => {
   client.release();
   return rows;}
   catch(err) {
-    console.log('create a contractor '+err.message);
+    console.log('create a contractor: ');
+    console.error(err)
   }
 };
 
@@ -86,6 +88,7 @@ const loginContractor = async ({ password, username }) => {
   WHERE c.username = $1
   `, [username]);
   if (isTaken.length === 0) {
+    client.release();
     return ({ message: 'No associated user' })
   }
   if (await bcrypt.compare(password, isTaken[0].password)) {

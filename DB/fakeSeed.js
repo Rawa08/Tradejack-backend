@@ -15,8 +15,8 @@ const createContractor = async () => {
       street: faker.address.streetName(),
       "postal_code": faker.address.zipCode(),
       city: faker.address.cityName(),
-    }
-    await axios.post('http://localhost:3000/api/users/contractors', contractor)
+    };
+    await axios.post('http://localhost:3000/api/users/contractors', contractor);
   }
 }
 

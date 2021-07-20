@@ -5,7 +5,7 @@ const { getAllContractors, getContractor, createContractor, loginContractor } = 
 //get all contactors
 
 router.get('/', async (req, res) =>{
-const contactors = await getAllContractors();
+const contractors = await getAllContractors();
 res.json(contractors);
 });
 

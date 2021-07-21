@@ -92,7 +92,7 @@ const loginContractor = async ({ password, username }) => {
     return ({ message: 'No associated user' })
   }
   if (await bcrypt.compare(password, isTaken[0].password)) {
-    const accessToken = jwt.sign({ contractor: isTaken[0].contractor_id, role: 'contractor' }, 'process.env.ACCESS_CODE')
+    const accessToken = jwt.sign({ contractor: isTaken[0].contractor_id, role: 'contractor' }, process.env.CONTRACTOR_CODE)
     const responseobj = { role: 'contractor', accessToken };
     await client.query(`
     UPDATE contractors

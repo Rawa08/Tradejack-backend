@@ -69,7 +69,7 @@ const loginClient = async ({ password, username }) => {
       return ({ message: 'No associated user' })
     }
     if (await bcrypt.compare(password, isTaken[0].password)) {
-      const accessToken = jwt.sign({ client_id: isTaken[0].client_id, role: 'client' }, 'process.env.ACCESS_CODE')
+      const accessToken = jwt.sign({ client_id: isTaken[0].client_id, role: 'client' }, process.env.CLIENT_CODE)
       const responseobj = { role: 'client', accessToken };
       await client.query(`
     UPDATE clients

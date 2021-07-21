@@ -4,21 +4,22 @@ const axios = require('axios')
 const createContractor = async () => {
   for(let i=0; i<20; i++) {
     const contractor = {
-      "org_number": faker.finance.account(10),
+      "orgnumber": faker.finance.account(10),
       username: faker.internet.userName(),
-      company_name: faker.company.companyName(0),
-      "f_name": faker.name.firstName(),
-      "l_name": faker.name.lastName(),
+      companyname: faker.company.companyName(0),
+      "fname": faker.name.firstName(),
+      "lname": faker.name.lastName(),
       email: faker.internet.exampleEmail(),
       password: 'test',
-      "phone_num": faker.phone.phoneNumber(0),
+      "phonenum": faker.phone.phoneNumber(0),
       street: faker.address.streetName(),
-      "postal_code": faker.address.zipCode(),
+      "postalcode": faker.address.zipCode(),
       city: faker.address.cityName(),
     };
     await axios.post('http://localhost:3000/api/users/contractors', contractor);
   }
 }
+
 
   const clientSchema = {
     "username": "Tottzi",

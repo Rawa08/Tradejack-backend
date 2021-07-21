@@ -3,8 +3,9 @@ drop table Clients, Contractors;
 CREATE TABLE Clients
 (
 	id serial PRIMARY KEY,
-	client_id varchar(120) not NULL,
-	username varchar(120) NOT NULL,
+	client_id varchar(120) not NULL UNIQUE,
+	username varchar(120) NOT NULL UNIQUE,
+	profile_image varchar(300) default 'https://agiltec.se/wp-content/uploads/blank-profile-picture-973460_640.png',
 	f_name varchar(120) not null,
 	l_name varchar(120) not null,
 	email varchar(120) not null,
@@ -15,15 +16,17 @@ CREATE TABLE Clients
 	city varchar(120) not null,
 	TS timestamptz default now(),
 	last_login timestamp
+
 );
 
 CREATE TABLE Contractors
 (
 	id serial PRIMARY KEY,
-	contractor_id varchar(120) NOT NULL,
-	username varchar(120) NOT NULL,
+	contractor_id varchar(120) NOT NULL UNIQUE,
+	username varchar(120) NOT NULL UNIQUE,
+	profile_image varchar(300) default 'https://agiltec.se/wp-content/uploads/blank-profile-picture-973460_640.png',
 	org_number varchar(120) NOT NULL,
-  company_name varchar(120) NOT NULL,
+    company_name varchar(120) NOT NULL,
 	email varchar(120) not null,
 	password char(60) not null,
 	phone_num varchar(20) not null,
@@ -55,3 +58,48 @@ select * from clients;
 
 UPDATE Clients Set last_login = now() where client_id='123';
 select * from clients;
+
+
+CREATE TABLE IF NOT EXISTS Workorders (
+	id serial PRIMARY KEY,
+	author_id varchar(120) REFERENCES clients (client_id) ON DELETE CASCADE,
+	title varchar(120) NOT NULL,
+	description varchar(500) NOT NULL,
+	street varchar(120) NOT NULL,
+	postal_code integer NOT NULL,
+	city varchar(120) NOT NULL,
+	start_date varchar(120),
+  end_date varchar(120),
+	image_link text[],
+	approved boolean default false,
+  work_done boolean default false,
+  ts timestamptz default now()
+);
+
+-- INSERT INTO workorders
+-- (
+-- 	author_id,
+-- 	title,
+-- 	description,
+-- 	street,
+-- 	postal_code,
+-- 	city,
+-- start_date,
+-- image_link,
+-- approved)
+-- VALUES
+-- (3, 'RAWAclient', 'description', 'street', 1234, 'city',
+-- '2021-10-01', 'httpimagelink',true);
+
+
+CREATE TABLE IF NOT EXISTS Workoffers (
+	id serial PRIMARY KEY,
+	order_id integer REFERENCES workorders (id) ON DELETE CASCADE,
+	contractor_id varchar(120) REFERENCES contractors (contractor_id) ON DELETE CASCADE,
+	message_field varchar(500),
+ chosen boolean default false,
+ ts timestamptz default now()
+)
+
+
+UNIQUE

@@ -8,8 +8,8 @@ const pool = new Pool({
     port: process.env.PORT_SQL,
     database: process.env.DB_SQL,
     max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    idleTimeoutMillis: 20000,
+    connectionTimeoutMillis: 5000,
     ssl: {
       rejectUnauthorized: false
     }

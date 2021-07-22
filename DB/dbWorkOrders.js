@@ -17,6 +17,7 @@ const getAllOrders = async () => {
 
 const getWorkOrder = async (id) => {
   try {
+    console.log(id)
     const client = await pool.connect();
     const { rows } = await client.query('SELECT * FROM workorders as w WHERE w.id = $1', [id]);
     client.release();
@@ -36,9 +37,9 @@ const getAllMyWorkOrders = async (id) => {
   } catch (err) { console.log('getting all my work orders ' + err.message) }
 };
 
-const createWorkOrder = async (payload) => {
+const createWorkOrder = async (payload, author_id) => {
   try {
-    const { author_id,
+    const {
       title,
       description,
       street,

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getAllClients, getClient, createClient,loginClient } = require('../../DB/dbClient')
+const { authenticateClientToken } = require('../../middleware')
 
 //get all clients
 
@@ -10,8 +11,8 @@ res.json(clients);
 });
 
 // get one client
-router.get('/:id', async (req, res) =>{
-    const {id} = req.params;
+router.get('/profile', authenticateClientToken, async (req, res) =>{
+    const {client_id: id} = req.user;
     const client = await getClient(id);
     res.json(client);
     });

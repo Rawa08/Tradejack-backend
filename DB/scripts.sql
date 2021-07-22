@@ -39,6 +39,45 @@ CREATE TABLE Contractors
 	last_login timestamptz
 );
 
+CREATE TABLE IF NOT EXISTS Admin(
+	id serial PRIMARY KEY,
+    name: varchar(20) not null,,
+    password varchar(20) not null,
+    last_login timestamptz
+     ts timestamptz default now()
+)
+
+-- ALTER TABLE customers
+-- ADD COLUMN phone VARCHAR;
+CREATE TABLE IF NOT EXISTS Workorders (
+	id serial PRIMARY KEY,
+	author_id varchar(120) REFERENCES clients (client_id) ON DELETE CASCADE,
+	title varchar(120) NOT NULL,
+	description varchar(500) NOT NULL,
+	street varchar(120) NOT NULL,
+	postal_code integer NOT NULL,
+	city varchar(120) NOT NULL,
+	start_date varchar(120),
+    end_date varchar(120),
+	image_link text[],
+	approved boolean default false,
+  work_done boolean default false,
+  ts timestamptz default now()
+);
+
+
+
+CREATE TABLE IF NOT EXISTS Workoffers (
+	id serial PRIMARY KEY,
+	order_id integer REFERENCES workorders (id) ON DELETE CASCADE,
+	contractor_id varchar(120) REFERENCES contractors (contractor_id) ON DELETE CASCADE,
+	message_field varchar(500),
+ chosen boolean default false,
+ ts timestamptz default now()
+)
+
+
+
 INSERT INTO Clients
 (
 	client_id,
@@ -59,47 +98,3 @@ select * from clients;
 UPDATE Clients Set last_login = now() where client_id='123';
 select * from clients;
 
-
-CREATE TABLE IF NOT EXISTS Workorders (
-	id serial PRIMARY KEY,
-	author_id varchar(120) REFERENCES clients (client_id) ON DELETE CASCADE,
-	title varchar(120) NOT NULL,
-	description varchar(500) NOT NULL,
-	street varchar(120) NOT NULL,
-	postal_code integer NOT NULL,
-	city varchar(120) NOT NULL,
-	start_date varchar(120),
-  end_date varchar(120),
-	image_link text[],
-	approved boolean default false,
-  work_done boolean default false,
-  ts timestamptz default now()
-);
-
--- INSERT INTO workorders
--- (
--- 	author_id,
--- 	title,
--- 	description,
--- 	street,
--- 	postal_code,
--- 	city,
--- start_date,
--- image_link,
--- approved)
--- VALUES
--- (3, 'RAWAclient', 'description', 'street', 1234, 'city',
--- '2021-10-01', 'httpimagelink',true);
-
-
-CREATE TABLE IF NOT EXISTS Workoffers (
-	id serial PRIMARY KEY,
-	order_id integer REFERENCES workorders (id) ON DELETE CASCADE,
-	contractor_id varchar(120) REFERENCES contractors (contractor_id) ON DELETE CASCADE,
-	message_field varchar(500),
- chosen boolean default false,
- ts timestamptz default now()
-)
-
-
-UNIQUE

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {getAllOrders, getWorkOrder, getAllMyWorkOrders, createWorkOrder, updateWorkStatus}
   = require('../../DB/dbWorkOrders');
+const { authenticateClientToken, authenticateContractorToken } = require('../../middleware')
 
 //Dev-Route get all work orders
 router.get('/', async (req, res) => {
@@ -9,23 +10,24 @@ router.get('/', async (req, res) => {
  res.json(orders);
 })
 
+
+// get all of a users workOrders
+router.get('/user', authenticateClientToken, async (req, res) =>{
+  const { client_id:id } = req.user;
+  const client = await getAllMyWorkOrders(id);
+  res.json(client);
+});
+
 // get one workOrder
 router.get('/:id', async (req, res) =>{
     const {id} = req.params;
     const client = await getWorkOrder(id);
     res.json(client);
     });
-
-// get all of a users workOrders
-router.get('/user/:id', async (req, res) =>{
-  const {id} = req.params;
-  const client = await getAllMyWorkOrders(id);
-  res.json(client);
-  });
-
 //create a workOrder
-router.post('/', async (req, res) => {
-  const newOrder = await createWorkOrder(req.body);
+router.post('/', authenticateClientToken, async (req, res) => {
+  const { client_id } = req.user;
+  const newOrder = await createWorkOrder(req.body, client_id);
   res.json(newOrder);
 })
 

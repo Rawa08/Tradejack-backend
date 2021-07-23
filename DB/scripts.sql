@@ -1,4 +1,4 @@
-drop table Clients, Contractors;
+
 
 CREATE TABLE Clients
 (
@@ -39,16 +39,9 @@ CREATE TABLE Contractors
 	last_login timestamptz
 );
 
-CREATE TABLE IF NOT EXISTS Admin(
-	id serial PRIMARY KEY,
-    name: varchar(20) not null,,
-    password varchar(20) not null,
-    last_login timestamptz
-     ts timestamptz default now()
-)
 
--- ALTER TABLE customers
--- ADD COLUMN phone VARCHAR;
+
+
 CREATE TABLE IF NOT EXISTS Workorders (
 	id serial PRIMARY KEY,
 	author_id varchar(120) REFERENCES clients (client_id) ON DELETE CASCADE,
@@ -76,25 +69,20 @@ CREATE TABLE IF NOT EXISTS Workoffers (
  ts timestamptz default now()
 )
 
+CREATE TABLE IF NOT EXISTS Admin(
+	id serial PRIMARY KEY,
+    name: varchar(20) not null,,
+    password varchar(20) not null,
+    last_login timestamptz
+     ts timestamptz default now()
+)
 
 
-INSERT INTO Clients
-(
-	client_id,
-	username,
-	f_name,
-	l_name,
-	email,
-	password,
-	phone_num,street,
-	postal_code,
-	city)
-VALUES
-(123, 'RAWAclient', 'Rawa', 'Aref', 'rawa.aref@gmail.com', 'testingpastestingpastestingpastestingpastestingpastestingpas',
-'0123456789', 'sillystreet', 15627, 'Stockholm');
 
-select * from clients;
+-- select * from clients;
+--drop table Clients, Contractors;
+-- UPDATE Clients Set last_login = now() where client_id='123';
+-- select * from clients;
 
-UPDATE Clients Set last_login = now() where client_id='123';
-select * from clients;
-
+-- ALTER TABLE customers
+-- ADD COLUMN phone VARCHAR;

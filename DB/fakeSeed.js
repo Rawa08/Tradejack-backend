@@ -1,5 +1,5 @@
-const faker = require('faker/locale/sv')
-const axios = require('axios')
+const faker = require('faker/locale/sv');
+const axios = require('axios');
 
 const createContractor = async () => {
   for(let i=0; i<20; i++) {

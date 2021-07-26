@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getAllClients, getClient, createClient,loginClient } = require('../../DB/dbClient')
-const { authenticateClientToken } = require('../../middleware')
+const { getAllClients, getClient, createClient,loginClient } = require('../../DB/dbClient');
+const { authenticateClientToken } = require('../../middleware');
+
 
 //get all clients
 
@@ -37,6 +38,5 @@ router.post('/login', async (req,res) => {
   const loginAttempt = await loginClient(req.body);
   res.json(loginAttempt)
 })
-
 
 module.exports = router;

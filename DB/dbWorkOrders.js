@@ -94,13 +94,16 @@ const getAllOrderByContractorID = async (payload) => {
   try {
     const client = await pool.connect();
     const { rows } = await client.query(`
-    SELECT * FROM contractors c
+    SELECT w.id offer_ID, cu.f_name forename, cu.l_name lastname,
+    cu.email clientmail, cu.phone_num clientphone, * FROM contractors c
     RIGHT OUTER JOIN workoffers as w
     on c.contractor_id = w.contractor_id
     INNER JOIN workorders as o
     on w.order_id = o.id
+    RIGHT JOIN clients as cu
+    on o.author_id = cu.client_id
     WHERE c.contractor_id = $1
-  `, payload);
+  `, [payload]);
     client.release();
     return rows;
   }

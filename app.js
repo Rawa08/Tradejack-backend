@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const {clientRoutes, contractorRoutes, workOrderRoutes, workOfferRoutes}= require('./restAPI/index');
+const {clientRoutes, contractorRoutes, workOrderRoutes, workOfferRoutes, contractorRating}= require('./restAPI/index');
 const PORT = process.env.PORT || 3000;
 const cloudinary = require('cloudinary');
 
@@ -33,6 +33,7 @@ app.use('/api/users/clients',clientRoutes);
 app.use('/api/users/contractors', contractorRoutes);
 app.use('/api/work/workorders', workOrderRoutes);
 app.use('/api/work/workoffers', workOfferRoutes);
+app.use('/api/work/rating', contractorRating);
 
 
 app.listen(PORT, () => console.log(`bzt.. bzt... flying on ${PORT}`));

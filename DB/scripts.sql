@@ -70,13 +70,27 @@ CREATE TABLE IF NOT EXISTS Workoffers (
 
 CREATE TABLE IF NOT EXISTS Admin(
 	id serial PRIMARY KEY,
-    name: varchar(20) not null,,
+    name: varchar(20) not null,
     password varchar(20) not null,
     last_login timestamptz
      ts timestamptz default now()
 )
 
 
+CREATE TABLE IF NOT EXISTS Rating(
+	id serial PRIMARY KEY,
+    contractor_id varchar(120) NOT NULL REFERENCES contractors (contractor_id) ON DELETE CASCADE,
+	workorder_id integer NOT NULL REFERENCES workorders (id) ON DELETE CASCADE,
+    client_id varchar(120) NOT NULL REFERENCES clients (client_id) ON DELETE CASCADE,
+	rating smallint NOT NULL ,
+	review varchar(300),
+    ts timestamptz default now()
+)
+
+-- INSERT INTO Rating (contractor_id, workorder_id, client_id, rating, review)
+-- VALUES ('f79df2a0-75e0-4319-beda-64e5a72c525f',6,'0a7f0b5d-1160-4bfd-8103-a5de4db55b6e',8,'Best Contractor');
+
+-- select * from Rating
 
 -- select * from clients;
 --drop table Clients, Contractors;

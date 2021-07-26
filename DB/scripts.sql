@@ -16,7 +16,6 @@ CREATE TABLE Clients
 	city varchar(120) not null,
 	TS timestamptz default now(),
 	last_login timestamp
-
 );
 
 CREATE TABLE Contractors

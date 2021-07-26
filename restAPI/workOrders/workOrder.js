@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getAllOrders, getWorkOrder, getAllMyWorkOrders, createWorkOrder, updateWorkStatus}
+const {getAllOrders, getWorkOrder, getAllMyWorkOrders, createWorkOrder, updateWorkStatus, getAllOrderByContractorID}
   = require('../../DB/dbWorkOrders');
 const { authenticateClientToken, authenticateContractorToken } = require('../../middleware')
 
@@ -10,6 +10,11 @@ router.get('/', async (req, res) => {
  res.json(orders);
 })
 
+router.get('/contractor/:id', async (req, res) => {
+  const {id} = req.params;
+  const orders = await getAllOrderByContractorID(id);
+  res.json(orders);
+ })
 
 // get all of a users workOrders
 router.get('/user', authenticateClientToken, async (req, res) =>{

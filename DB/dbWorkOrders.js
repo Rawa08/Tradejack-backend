@@ -89,6 +89,23 @@ const updateWorkStatus = async (column, update_value, id) => {
   } catch (err) { console.log('getting updateWorkorder ' + err.message) }
 }
 
+
+const getAllOrderByContractorID = async (payload) => {
+  try {
+    const client = await pool.connect();
+    const { rows } = await client.query(`
+    SELECT * FROM contractors c
+    RIGHT OUTER JOIN workoffers as w
+    on c.contractor_id = w.contractor_id
+    INNER JOIN workorders as o
+    on w.order_id = o.id
+    WHERE c.contractor_id = $1
+  `, payload);
+    client.release();
+    return rows;
+  }
+  catch (err) { console.log('From Create workoffer in db: ' + err.message) }
+};
 module.exports = {
-  getAllOrders, getWorkOrder, getAllMyWorkOrders, createWorkOrder, updateWorkStatus
+  getAllOrders, getWorkOrder, getAllMyWorkOrders, createWorkOrder, updateWorkStatus, getAllOrderByContractorID
 };

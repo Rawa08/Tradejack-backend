@@ -28,6 +28,7 @@ const getWorkOffersByContractor = async (id) => {
 
 const getWorkOffersByWorkOrder = async (id) => {
   try {
+    console.log(id)
     const client = await pool.connect();
     const { rows } = await client.query(`SELECT c.*, w.* FROM workoffers as w
        INNER JOIN Contractors as c ON w.Contractor_id = c.Contractor_id WHERE w.order_id = $1`, [id]);

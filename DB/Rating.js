@@ -37,11 +37,16 @@ const getContractorAverageRating = async (id) => {
         const { rows } = await client.query('SELECT r.rating FROM Rating as r WHERE r.contractor_id = $1 ', [id]);
 
         const allRatings = [];
-        const ratings = await rows.map(d => allRatings.push(d.rating))
+        await rows.map(d => allRatings.push(d.rating));
+        if(allRatings.length<1){
+            client.release();
+            return 'Not Rated yet';
+        }
+        else {
         const averageRating = allRatings.reduce((acc, curr) => (acc + curr)) / allRatings.length;
         client.release();
 
-        return averageRating.toFixed(1);
+        return averageRating.toFixed(1);}
     }
     catch (err) {
         console.log('getContractorAverageRating from db ' + err.message)
@@ -70,12 +75,13 @@ const createRating = async (payload) => {
 
         const db = await pool.connect();
         const { contractor_id, workorder_id, client_id, rating, review } = payload;
+        console.log(payload)
         const {rows} = await db.query(`
         SELECT * FROM rating as r
         WHERE r.workorder_id = $1
         `, [workorder_id]);
 
-        if(rows.length > 0 ) return 'You can only rate contractor one time';
+        if(rows.length > 0 ) return 'You can only rate one contractor and one time!';
 
         const workOffer = await db.query(`SELECT * FROM workoffers as w WHERE w.contractor_id = $1 AND w.order_id = $2
     `, [contractor_id, workorder_id]);
@@ -83,7 +89,7 @@ const createRating = async (payload) => {
 
         let offer = {};
         workOffer.rows.map(offers => {
-            if (!offers.chosen) return 'Contractors offer must  be chosen before rating';
+            if (!offers.chosen) return 'Contractors offer must  be chosen before rating!';
             else return offer = { ...offers }
         });
 
@@ -94,7 +100,7 @@ const createRating = async (payload) => {
 
         if (workOrder.rows.length <1  || workOrder.rows[0].author_id !== client_id) {
 
-            return 'Please Rate a Order made by You';
+            return 'Please Rate an order created by you!';
         }
         else {
 
@@ -103,6 +109,7 @@ const createRating = async (payload) => {
           VALUES ($1, $2, $3, $4, $5);`,
                 [contractor_id, workorder_id, client_id, rating, review]);
             db.release();
+            console.log(contractor_id, workorder_id)
             return saveRating.rows;
         }
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getAllContractors, getContractor, createContractor, loginContractor } = require('../../DB/dbContractor')
-
+const { getContractorAverageRating } = require('../../DB/Rating');
 //get all contactors
 
 router.get('/', async (req, res) =>{
@@ -12,7 +12,13 @@ res.json(contractors);
 // get one contractor
 router.get('/:id', async (req, res) =>{
     const {id} = req.params;
-    const contractor = await getContractor(id);
+    const contractorsData = await getContractor(id);
+    const contractorRating = await getContractorAverageRating(id);
+    const contractor = {...contractorsData, Rating:contractorRating}
+
+
+
+
     res.json(contractor);
     });
 

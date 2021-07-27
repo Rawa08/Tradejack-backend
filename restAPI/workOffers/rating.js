@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 router.get('/average/:id', async (req, res) => {
     const contractorRatings = await getContractorAverageRating(req.params.id);
 
-    res.json(contractorRatings);
+    res.json({rating:parseInt(contractorRatings)});
 });
 
 router.get('/reviews/:id', async (req, res) => {
@@ -35,8 +35,9 @@ router.get('/reviews/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const {contractor_id, workorder_id, client_id, rating, review} = req.body;
-
+    console.log('new rating: ' + contractor_id, workorder_id, client_id, rating)
     if(!contractor_id || !workorder_id || !client_id || !rating){
+
         res.json('Please Provide contractor_id, workorder_id(INT), client_id, rating(INT)')
     }
 

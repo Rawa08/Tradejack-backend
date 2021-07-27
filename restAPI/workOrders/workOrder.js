@@ -10,8 +10,8 @@ router.get('/', async (req, res) => {
  res.json(orders);
 })
 
-router.get('/contractor/:id', async (req, res) => {
-  const {id} = req.params;
+router.get('/contractor',authenticateContractorToken, async (req, res) => {
+  const {contractor: id} = req.user
   const orders = await getAllOrderByContractorID(id);
   res.json(orders);
  })
@@ -29,6 +29,7 @@ router.get('/:id', async (req, res) =>{
     const client = await getWorkOrder(id);
     res.json(client);
     });
+
 //create a workOrder
 router.post('/', authenticateClientToken, async (req, res) => {
   const { client_id } = req.user;

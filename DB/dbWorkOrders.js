@@ -17,15 +17,15 @@ const getAllOrders = async () => {
 
 const getWorkOrder = async (id) => {
   try {
-    console.log(id)
     const client = await pool.connect();
     const { rows } = await client.query('SELECT * FROM workorders as w WHERE w.id = $1', [id]);
     client.release();
-
     return rows;
   }
   catch (err) { console.log('get a wordorder from db ' + err.message) }
 };
+
+
 
 const getAllMyWorkOrders = async (id) => {
   try {
@@ -82,7 +82,7 @@ const updateWorkStatus = async (column, update_value, id) => {
   try {
       console.log(column+'  '+update_value+'  '+id)
     const client = await pool.connect();
-    const { rows } = await client.query(`UPDATE workorders as w SET ${column}=${update_value} WHERE w.id = $1`, [id]);
+    const { rows } = await client.query(`UPDATE workorders as w SET ${column}=$1 WHERE w.id = $2`, [update_value, id]);
     client.release();
 
     return rows;
@@ -107,7 +107,7 @@ const getAllOrderByContractorID = async (payload) => {
     client.release();
     return rows;
   }
-  catch (err) { console.log('From Create workoffer in db: ' + err.message) }
+  catch (err) { console.log('getAllOrderByContractorID: ' + err.message) }
 };
 module.exports = {
   getAllOrders, getWorkOrder, getAllMyWorkOrders, createWorkOrder, updateWorkStatus, getAllOrderByContractorID

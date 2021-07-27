@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {getAllOffers, getWorkOffersByContractor, getWorkOffersByWorkOrder, createWorkOffer, updateWorkStatus}
+const {authenticateContractorToken} = require('../../middleware')
+const {getWorkOffersById ,getAllOffers, getWorkOffersByContractor, getWorkOffersByWorkOrder, createWorkOffer, updateWorkStatus}
   = require('../../DB/dbWorkOffers');
 
 
@@ -25,9 +26,18 @@ router.get('/:id', async (req, res) =>{
   res.json(client);
   });
 
+  router.get('/byID/:id', async (req, res) =>{
+    const {id} = req.params;
+    const client = await getWorkOffersById(id); // add filter by person
+    res.json(client);
+    });
+
 //create a workOffer
-router.post('/', async (req, res) => {
-  const newOrder = await createWorkOffer(req.body);
+router.post('/', authenticateContractorToken, async (req, res) => {
+  const payload = req.body;
+  const { contractor } = req.user;
+  payload.contractor_id = req.user.contractor
+  const newOrder = await createWorkOffer(payload);
   res.json(newOrder);
 })
 
@@ -36,7 +46,7 @@ router.put('/:id', async (req, res) => {
   const {id} = req.params;
   const {updatetype, data} = req.body;
   const ok = await updateWorkStatus(updatetype, data, id);
-  console.log(updatetype, data, id)
+
   // if(updatetype === 'lastLogin') return await updateClientLogin(res, id)
   res.json(ok)
 })

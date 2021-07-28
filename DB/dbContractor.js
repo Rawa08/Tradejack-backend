@@ -99,7 +99,7 @@ const loginContractor = async ({ password, username }) => {
   try {
   const client = await pool.connect();
   const { rows: isTaken } = await client.query(`
-  SELECT username, password, contractor_id FROM contractors as c
+  SELECT username, company_name, password, contractor_id FROM contractors as c
   WHERE c.username = $1
   `, [username]);
   if (isTaken.length === 0) {
@@ -108,7 +108,7 @@ const loginContractor = async ({ password, username }) => {
   }
   if (await bcrypt.compare(password, isTaken[0].password)) {
     const accessToken = jwt.sign({ contractor: isTaken[0].contractor_id, role: 'contractor' }, process.env.CONTRACTOR_CODE)
-    const responseobj = { role: 'contractor', accessToken };
+    const responseobj = { username: isTaken[0].company_name, role: 'contractor', accessToken };
     await client.query(`
     UPDATE contractors
     SET last_login = Now()

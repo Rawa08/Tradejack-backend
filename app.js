@@ -39,8 +39,12 @@ const chatList = [];
 const chats = [];
 
 io.on("connection", socket => {
+
+  console.log('user joined');
+
   socket.on('join', info => {
     socket.join(info.room);
+    console.log(info);
     const index = chatList.findIndex(cL => cL.room === info.room);
     if (index === -1) {
       chatList.push(info);
@@ -48,7 +52,10 @@ io.on("connection", socket => {
   });
 
   socket.on('fetchChats', username => {
-    const prevChats = chatList.filter(cL => cL.username === username);
+    console.log(username);
+    const prevChats = chatList.filter(cL => cL.username === username ||
+      cL.receiver === username);
+      console.log(prevChats);
     io.to(socket.id).emit('sendChatList', prevChats);
   })
 

@@ -35,13 +35,14 @@ router.get('/reviews/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const {contractor_id, workorder_id, client_id, rating, review} = req.body;
-    console.log('new rating: ' + contractor_id, workorder_id, client_id, rating)
+
     if(!contractor_id || !workorder_id || !client_id || !rating){
 
         res.json('Please Provide contractor_id, workorder_id(INT), client_id, rating(INT)')
     }
 
     else {const rating = await createRating(req.body)
+
 
     res.json(rating)}
 

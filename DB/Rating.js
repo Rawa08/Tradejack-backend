@@ -75,7 +75,7 @@ const createRating = async (payload) => {
 
         const db = await pool.connect();
         const { contractor_id, workorder_id, client_id, rating, review } = payload;
-        console.log(payload)
+
         const {rows} = await db.query(`
         SELECT * FROM rating as r
         WHERE r.workorder_id = $1
@@ -88,14 +88,22 @@ const createRating = async (payload) => {
 
 
         let offer = {};
+
         workOffer.rows.map(offers => {
-            if (!offers.chosen) return 'Contractors offer must  be chosen before rating!';
-            else return offer = { ...offers }
+            if (!offers.chosen) {
+
+                return 'Contractors offer must  be chosen before rating!';
+            }
+            else{
+
+                return offer = { ...offers }
+            }
+
         });
 
 
         const workOrder = await db.query(` SELECT * FROM Workorders
-    WHERE workorders.author_id = $1 AND id = $2
+    WHERE workorders.author_id = $1 AND workorders.id = $2
     `, [client_id, offer.order_id]);
 
         if (workOrder.rows.length <1  || workOrder.rows[0].author_id !== client_id) {

@@ -61,13 +61,21 @@ const createWorkOffer = async (payload) => {
     const { order_id,
       contractor_id,
       message_field
-     } = payload;
+    } = payload;
     const payloadData = [order_id,
       contractor_id,
       message_field];
 
     const client = await pool.connect();
-    const { rows } = await client.query(`
+    const offers = await client.query(`SELECT w.* FROM workoffers as w WHERE w.order_id=$1 AND
+    w.contractor_id=$2
+    `, [order_id, contractor_id]);
+
+    if (offers.rows.length > 0) {
+      client.release();
+      return 'Contractor have alredy an offer on this order!'
+    } else {
+      const { rows } = await client.query(`
       INSERT INTO workoffers
       (order_id,
         contractor_id,
@@ -75,8 +83,13 @@ const createWorkOffer = async (payload) => {
        )
       VALUES ($1, $2, $3);
   `, payloadData);
-    client.release();
-    return rows;
+      client.release();
+      return rows
+    }
+
+
+
+
   }
   catch (err) { console.log('From Create workoffer in db: ' + err.message) }
 };
@@ -91,4 +104,4 @@ const updateWorkStatus = async (column, update_value, id) => {
   } catch (err) { console.log('getting updateworkoffer ' + err.message) }
 }
 
-module.exports = {getWorkOffersById ,getAllOffers, getWorkOffersByContractor, getWorkOffersByWorkOrder, createWorkOffer, updateWorkStatus};
+module.exports = { getWorkOffersById, getAllOffers, getWorkOffersByContractor, getWorkOffersByWorkOrder, createWorkOffer, updateWorkStatus };

@@ -15,6 +15,21 @@ const getAllContractors = async () => {
 }
 };
 
+const getAllContractorsWithRating = async () => {
+  try {
+  const client = await pool.connect();
+  const { rows } = await client.query(`
+  SELECT * FROM Contractors as c
+  RIGHT JOIN Rating as r
+  on c.Contractor_id = r.Contractor_id
+  order by r.rating`);
+  client.release();
+  return rows;
+} catch (err) {
+  console.log('from get all contractors with rating: '+err.message);
+}
+};
+
 const getContractor = async (id) => {
   try {
   const client = await pool.connect();
@@ -110,5 +125,5 @@ const loginContractor = async ({ password, username }) => {
 }
 
 module.exports = {
-  getAllContractors, getContractor, createContractor, loginContractor
+  getAllContractors, getContractor, createContractor, loginContractor, getAllContractorsWithRating
 }

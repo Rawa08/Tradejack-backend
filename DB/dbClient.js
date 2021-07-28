@@ -70,7 +70,7 @@ const loginClient = async ({ password, username }) => {
     }
     if (await bcrypt.compare(password, isTaken[0].password)) {
       const accessToken = jwt.sign({ client_id: isTaken[0].client_id, role: 'client' }, process.env.CLIENT_CODE)
-      const responseobj = { role: 'client', accessToken };
+      const responseobj = { username:isTaken[0].username,role: 'client', accessToken };
       await client.query(`
     UPDATE clients
     SET last_login = Now()

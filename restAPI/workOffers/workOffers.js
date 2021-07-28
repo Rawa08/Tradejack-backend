@@ -38,6 +38,7 @@ router.post('/', authenticateContractorToken, async (req, res) => {
   const { contractor } = req.user;
   payload.contractor_id = req.user.contractor
   const newOrder = await createWorkOffer(payload);
+
   res.json(newOrder);
 })
 

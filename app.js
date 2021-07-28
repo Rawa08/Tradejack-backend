@@ -44,29 +44,37 @@ io.on("connection", socket => {
 
   socket.on('join', info => {
     socket.join(info.room);
-    console.log(info);
-    const index = chatList.findIndex(cL => cL.room === info.room);
+    const index = chatList.findIndex(cL => cL.title === info.title && cL.receiver === info.receiver);
     if (index === -1) {
       chatList.push(info);
     }
   });
+  socket.on('joinExisting', room => {
+    console.log(`joining: ${room}`)
+    socket.join(room);
+  })
 
   socket.on('fetchChats', username => {
-    console.log(username);
     const prevChats = chatList.filter(cL => cL.username === username ||
       cL.receiver === username);
-      console.log(prevChats);
     io.to(socket.id).emit('sendChatList', prevChats);
   })
 
   socket.on('fetchOld', info => {
     const pastMessages = chats.filter(chat => chat.room === info)
-    console.log(pastMessages, info);
+    console.log(socket.rooms);
     io.to(socket.id).emit('bulkMessages', pastMessages);
   })
 
   socket.on('newMessage', body => {
-    const data = { ...body, tStamp: Date.now(), sender: body.username }
+    const tStamp = new Date();
+    const tsDay = tStamp.getDate().toString().length === 1 ? `0${tStamp.getDate()}` : tStamp.getDate()
+    const tsMonth = tStamp.getMonth().toString().length === 1 ? `0${tStamp.getMonth()+1}` : tStamp.getMonth()+1
+    const tsHours = tStamp.getHours().toString().length === 1 ? `0${tStamp.getHours()}` : tStamp.getHours()
+    const tsMinutes = tStamp.getMinutes().toString().length === 1 ? `0${tStamp.getMinutes()}` : tStamp.getMinutes()
+    const shownDate = `${tsHours}:${tsMinutes} - ${tsDay}/${tsMonth}`
+    const data = { ...body, tStamp: shownDate, sender: body.username }
+    console.log(socket.rooms);
     chats.push(data);
     io.to(body.room).emit('message', data);
   });

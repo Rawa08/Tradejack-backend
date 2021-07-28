@@ -86,21 +86,10 @@ const createRating = async (payload) => {
         const workOffer = await db.query(`SELECT * FROM workoffers as w WHERE w.contractor_id = $1 AND w.order_id = $2
     `, [contractor_id, workorder_id]);
 
-
         let offer = {};
+        workOffer.rows.find(offers => {if(offers.chosen) offer = {...offers}});
 
-        workOffer.rows.map(offers => {
-            if (!offers.chosen) {
-
-                return 'Contractors offer must  be chosen before rating!';
-            }
-            else{
-
-                return offer = { ...offers }
-            }
-
-        });
-
+        if(!offer.chosen) return 'You have to chose Contractors offer before rating!'
 
         const workOrder = await db.query(` SELECT * FROM Workorders
     WHERE workorders.author_id = $1 AND workorders.id = $2

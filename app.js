@@ -50,7 +50,6 @@ io.on("connection", socket => {
     }
   });
   socket.on('joinExisting', room => {
-    console.log(`joining: ${room}`)
     socket.join(room);
   })
 
@@ -62,7 +61,6 @@ io.on("connection", socket => {
 
   socket.on('fetchOld', info => {
     const pastMessages = chats.filter(chat => chat.room === info)
-    console.log(socket.rooms);
     io.to(socket.id).emit('bulkMessages', pastMessages);
   })
 
@@ -80,6 +78,7 @@ io.on("connection", socket => {
   });
 
   socket.on('disconnect', () => {
+    console.log('a user disconnected');
   });
 })
 

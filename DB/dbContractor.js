@@ -55,7 +55,9 @@ const createContractor = async (payload) => {
     phonenum,
     street,
     postalcode,
-    city, } = payload;
+    city,
+    profile_image
+   } = payload;
   const contractor_id = uuid();
 
   const paylodData = [
@@ -69,7 +71,8 @@ const createContractor = async (payload) => {
     postalcode,
     city,
     fName,
-    lName];
+    lName,
+    profile_image];
 
   const client = await pool.connect();
   const { rows: isTaken } = await client.query(`
@@ -84,8 +87,8 @@ const createContractor = async (payload) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const { rows } = await client.query(`
   INSERT INTO Contractors
-  (contractor_id, org_number, username, company_name, email, phone_num,street, postal_code, city, f_name, l_name, password)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);
+  (contractor_id, org_number, username, company_name, email, phone_num,street, postal_code, city, f_name, l_name, profile_image, password)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
   `, [...paylodData, hashedPassword]);
   client.release();
   return rows;}
